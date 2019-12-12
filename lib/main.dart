@@ -64,9 +64,20 @@ class RandomWordsState extends State<RandomWords> {
         suggestion.asPascalCase,
         style: _textStyle,
       ),
-      trailing: Icon(
-        saved ? Icons.favorite : Icons.favorite_border,
-        color: saved ? Colors.red : null,
+      trailing: IconButton(
+        icon: Icon(
+          saved ? Icons.favorite : Icons.favorite_border,
+          color: saved ? Colors.red : null,
+        ),
+        onPressed: () {
+          setState(() {
+            if (saved) {
+              _saved.remove(suggestion);
+            } else {
+              _saved.add(suggestion);
+            }
+          });
+        },
       ),
     );
   }
