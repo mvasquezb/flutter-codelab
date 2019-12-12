@@ -16,14 +16,7 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Startup Name Generator'),
-      ),
-      body: Center(
-        child: RandomWords(),
-      ),
-    );
+    return RandomWords();
   }
 }
 
@@ -39,7 +32,25 @@ class RandomWordsState extends State<RandomWords> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildSuggestions();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Startup Name Generator'),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.list), onPressed: () => _openFavourites(context),)
+        ],
+      ),
+      body: Center(
+        child: _buildSuggestions(),
+      ),
+    );
+  }
+
+  void _openFavourites(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => FavouritesScreen(favourites: _saved.toList()),
+      )
+    );
   }
 
   Widget _buildSuggestions() {
@@ -79,6 +90,32 @@ class RandomWordsState extends State<RandomWords> {
           });
         },
       ),
+    );
+  }
+}
+
+class FavouritesScreen extends StatelessWidget {
+  final List<WordPair> favourites;
+  
+  FavouritesScreen({ Key key, @required this.favourites}) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Saved Suggestions'),),
+      body: ListView(
+        padding: EdgeInsets.all(16.0),
+        children: () {
+          final Iterable<ListTile> pairs = favourites.map((pair) => ListTile(
+            title: Text(pair.asPascalCase),
+          ));
+
+          return ListTile.divideTiles(
+            context: context,
+            tiles: pairs
+          ).toList();
+        }()
+      )
     );
   }
 }
